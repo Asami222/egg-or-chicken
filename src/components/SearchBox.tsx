@@ -15,10 +15,10 @@ const SearchBox = (props: Props) => {
         type="text"
         value={props.value} 
         placeholder="Search location.." 
-        className="px-4 py-2 w-[230px] border border-gray-300 rounded-l-md focus:outline-none focus:border-blue-500 h-full"
+        className="px-4 py-2 w-[230px] rounded-lg focus:outline-none focus:border-sky-700 h-full text-sky-700"
         onChange={props.onChange}
       />
-      <button className="px 4 py-[9px] bg-blue-500 text-white rounded-r-md focus:outline-none hover:bg-blue-600 h-full">
+      <button className="px-[8px] py-[4px] text-sky-700 focus:outline-none hover:text-sky-500 h-full text-xl">
         <IoSearch />
       </button>
     </form>

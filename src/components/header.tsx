@@ -4,16 +4,13 @@ import { createClient } from "libs/supabase/server";
 import { signOut } from "app/login/actions";
 import feedImg from "../../public/svg/feed.svg"
 import howtoImg from "../../public/svg/howto.svg"
-import sunnyImg from "../../public/svg/sunny.svg"
+//import sunnyImg from "../../public/svg/sunny.svg"
 import loginImg from "../../public/svg/login.svg"
 import logoutImg from "../../public/svg/logout.svg"
+import NavWeather from "./NavWeather";
+
 
 const categories = [
-  {
-    href: "/weather",
-    src: sunnyImg,
-    alt: "今日の天気"
-  },
   {
     href: "/food",
     src: feedImg,
@@ -39,6 +36,11 @@ const Header = async() => {
       <div className="flex justify-end w-[86%] py-4 max-w-sm">
       <nav>
         <ul className="flex items-center gap-6">
+          <li>
+              <Link href="/weather">
+                <NavWeather />
+              </Link>
+            </li>
           { categories.map((category,i) => (
             <li key={i}>
               <Link href={category.href}>

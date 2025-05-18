@@ -1,6 +1,15 @@
 import { cn } from "utils/cn"
 
-const Container = (props:React.HTMLProps<HTMLDivElement>) => {
+export const Container = (props:React.HTMLProps<HTMLDivElement>) => {
+  return (
+    <div
+      {...props}
+      className={cn("w-full bg-white rounded-2xl flex py-4", props.className)}
+      />
+  )
+}
+/*
+export const Container = (props:React.HTMLProps<HTMLDivElement>) => {
   return (
     <div
       {...props}
@@ -8,5 +17,4 @@ const Container = (props:React.HTMLProps<HTMLDivElement>) => {
       />
   )
 }
-
-export default Container
+*/

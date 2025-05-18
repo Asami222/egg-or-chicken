@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_レイヤー_2" data-name="レイヤー 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 114.35 146.61">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="57.17" y1=".63" x2="57.17" y2="143.96" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c1d6e5"/>
+      <stop offset=".42" stop-color="#69b1d6"/>
+      <stop offset=".82" stop-color="#1d92c9"/>
+      <stop offset="1" stop-color="#0086c5"/>
+    </linearGradient>
+  </defs>
+  <g id="_レイヤー_113" data-name="レイヤー 113">
+    <path class="cls-1" d="M32.56,116.48c.65-3.34-.94-6.71-3.93-8.35C-20.16,81.36-3.57,1.56,55.47.01c26.44-.6,51.91,19.38,57.64,45.2,5.73,25.83-8.91,54.69-33.13,65.33-7.18,3.15-9.63,9.89-7.28,19.46.13.54.29,1.08.49,1.6,5.72,14.82-16.07,21.67-19.87,6.34-.12-.49-.2-1-.2-1.51.03-7.31,10.18-14.01,1.75-22.79-2.87-2.96-9.49-.85-8.6,3.16,1.19,5.34-5.54,10.5-10.39,7.98-2.9-1.51-3.94-5.16-3.32-8.32Z"/>
+  </g>
+</svg>

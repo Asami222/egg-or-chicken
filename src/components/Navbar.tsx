@@ -60,7 +60,7 @@ const Navbar = ({location}: Props) => {
       },500)
     }
   }
-
+/*
   function handleCurrentLocation() {
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition(async(position) => {
@@ -80,17 +80,10 @@ const Navbar = ({location}: Props) => {
       })
     }
   }
-  
+*/  
   return (
     <>
-    <section className="flex gap-2 items-center">
-      <MdMyLocation
-        title="Your Current Location"
-        onClick={handleCurrentLocation}
-        className="text-2xl text-gray-400 hover:opacity-80 cursor-pointer"
-      />
-      <MdOutlineLocationOn className="text-3xl"/>
-      <p className="text-slate-900/80 text-sm"> {location} </p>
+    <section className="flex justify-center mt-4">
       <div className="relative hidden md:flex">{/* Search Box */}
       <SearchBox 
         value={city}
