@@ -20,6 +20,36 @@ export const iconNameDict: Record<string, string> = {
   '50n': '/svg/fog.svg',
 }
 
+export const iconNameToEggDict: Record<string, string> = {
+  '01d': '/obtain/egg-red.webp',
+  '01n': '/obtain/egg-red.webp',
+  '02d': '/obtain/egg-nomal.webp',
+  '02n': '/obtain/egg-nomal.webp',
+  '03d': '/obtain/egg-nomal.webp',
+  '03n': '/obtain/egg-nomal.webp',
+  '04d': '/obtain/egg-nomal.webp',
+  '04n': '/obtain/egg-nomal.webp',
+  '09d': '/obtain/egg-blue.webp',
+  '09n': '/obtain/egg-blue.webp',
+  '10d': '/obtain/egg-blue.webp',
+  '10n': '/obtain/egg-blue.webp',
+  '11d': '/obtain/egg-gold.webp',
+  '11n': '/obtain/egg-gold.webp',
+  '13d': '/obtain/egg-red.webp',
+  '13n': '/obtain/egg-red.webp',
+  '50d': '/obtain/egg-blue.webp',
+  '50n': '/obtain/egg-blue.webp',
+}
+
+export const iconToFoodsMap: Record<string, string[]> = {
+  plant: ['01d', '01n', '02d', '02n', '09d', '09n', '10d', '10n'],
+  fruit: ['01d', '01n'],
+  frog: ['11d','11n'],
+  insect: ['11d','11n'],
+};
+
+export const thunderIcons = ['11d', '11n'];
+
 export const weekNameDict: Record<string, string> = {
   'Monday': '月曜日',
   'Tuesday': '火曜日',

@@ -7,7 +7,7 @@ import { useFilteredWeatherData } from "hooks/useFilteredWeatherData"
 import { removeZero } from 'utils/weatherDict';
 import { format } from 'date-fns';
 import { shortWeekNameDict } from 'utils/weatherDict';
-import { ImgBox } from './WeatherIcon';
+import { ImgBox } from './ui/img';
 
 type FoodCheckboxProps = {
     imgexchange?: string

@@ -1,6 +1,9 @@
 "use client";
 
 //import Image, { StaticImageData } from "next/image"
+import { useAtom } from 'jotai';
+import { placeAtom } from 'app/atom';
+import { useFilteredWeatherData } from 'hooks/useFilteredWeatherData';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { Container } from "components/Container"
 //import plantImg from "../../../public/food/plant.webp"
@@ -10,8 +13,11 @@ import { Container } from "components/Container"
 import FoodCheckbox from "components/FoodCheckbox"
 import { useState } from "react"
 import { IoCloseOutline } from "react-icons/io5";
-import { ImgBox } from "components/WeatherIcon";
+import { ImgBox } from 'components/ui/img';
+import { useFoods } from 'hooks/useItems';
+import type { Food, FoodType } from 'utils/types';
 
+/*
 const imgdata = [
   {
     src: '/food/plant.webp',
@@ -37,21 +43,56 @@ const imgdata = [
     exchange: '/food/frog.webp',
   }
 ]
+*/
 
+type FoodDialogData = {
+  food: Food;
+  src: string;
+  alt: string;
+  exchange?: string;
+};
 
 const Food = () => {
 
-  const [selectedItem, setSelectedItem] = useState<null | typeof imgdata[0]>(null);
+  const [place] = useAtom(placeAtom);
+  const { data: weatherData, isPending: weatherLoading, error } = useFilteredWeatherData(place);
+  const { data: foods, isPending: foodsLoading } = useFoods(weatherData);
+  const [selectedItem, setSelectedItem] = useState<FoodDialogData | undefined>(undefined);
+  const foodOrder: FoodType[] = ['plant', 'fruit', 'frog', 'insect'];
 
-  function open(item: typeof imgdata[0]) {
+  if (weatherLoading || foodsLoading) return <p>読み込み中...</p>;
+  if (error) return <div>エラーが発生しました</div>;
+  if (foods == undefined) return <div>フードが未定義です</div>;
+  /*
+  function open(item) {
     setSelectedItem(item);
   }
+  */
 
+ function open(food: Food) {
+  const dialogData: FoodDialogData = {
+    food,
+    src: `/food/${food.food_type}.webp`,
+    alt: {
+      plant: "植物",
+      fruit: "果実",
+      frog: "両生類",
+      insect: "昆虫",
+    }[food.food_type] as string,
+    exchange: {
+      plant: '/food/fruit.webp',
+      fruit: '/food/frog.webp',
+      frog: '/food/insect.webp',
+    }[food.food_type], // optional
+  };
+
+  setSelectedItem(dialogData);
+}
   function close() {
-    setSelectedItem(null);
+    setSelectedItem(undefined);
   }
 
-  console.log(selectedItem)
+  console.log("foods",foods)
 
   return (
     <div className='mx-auto flex flex-col gap-9 w-full pb-10 pt-6'>
@@ -61,14 +102,28 @@ const Food = () => {
           （天気予報は変わる可能性があるので注意しましょう）
         </p>
         <Container className="px-6 py-5">
-          <ul className="grid grid-cols-3 gap-x-2 sm:gap-x-4 gap-y-8 mx-auto">
-          { imgdata.map((d,i) => (
-            <li key={i} className="flex flex-col gap-2">
-              <ImgBox src={d.src} description={d.alt} sizes="23.1vw" className="h-[90px] w-[90px] cursor-pointer hover:opacity-80" onClick={() => open(d)}/>
-              <p className="text-xs text-center font-medium">{d.number}</p>
-            </li>
-          ))}
+          { foods.length === 0 ? (
+            <p className='mx-auto'>現在食べ物はありません</p>
+          ):(
+            <ul className="grid grid-cols-3 gap-x-2 sm:gap-x-4 gap-y-8 mx-auto">
+            { foodOrder.flatMap( type => 
+              foods
+              .filter(food => food.food_type === type)
+              .map((d,i) => (
+                <li key={`${type}-${i}`} className="flex flex-col gap-2">
+                  <ImgBox
+                    src={`/food/${d.food_type}.webp`}
+                    description={d.food_type}
+                    sizes="23.1vw"
+                    className="h-[90px] w-[90px] cursor-pointer hover:opacity-80"
+                    onClick={() => open(d)}
+                  />
+                  <p className="text-xs text-center font-medium">{d.count}</p>
+                </li>
+              ))
+            )}
           </ul>
+          )}
         </Container>
       </section>
 
@@ -86,7 +141,7 @@ const Food = () => {
                 </DialogTitle>
                     <div className="flex items-center gap-5 justify-center my-4">
                       <ImgBox src={selectedItem.src} description={selectedItem.alt} sizes="18vw" className="h-[70px] w-[70px]"/>
-                      <p className="font-medium text-slate-800">{selectedItem.number}</p>
+                      <p className="font-medium text-slate-800">{selectedItem.food.count}</p>
                     </div>
                   <FoodCheckbox imgexchange={selectedItem.exchange} imgdescription={selectedItem.alt} />
                     <div className="mt-4 flex justify-end">

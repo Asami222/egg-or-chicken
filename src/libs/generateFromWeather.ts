@@ -1,0 +1,134 @@
+import { Egg, Food } from "utils/types";
+import { WeatherData1 } from "utils/weatherdata";
+import { iconNameToEggDict, iconToFoodsMap, thunderIcons } from "utils/weatherDict";
+
+//ロジック
+
+export function generateEggsFromWeather(
+  weatherData: (WeatherData1 | undefined)[]
+): Egg[] {
+  const eggs: Egg[] = [];
+  //const now = new Date();
+
+ 
+  for (const entry of weatherData) {
+    if (!entry || !entry.dt) {
+      continue;
+    }
+     
+    const dateStr = new Date(entry.dt * 1000).toISOString().split('T')[0];
+    //const eggDate = new Date(`${dateStr}T09:00:00+09:00`); // JSTの朝9時
+    //const isToday = dateStr === today.toISOString().split("T")[0];
+    //const isPastNine = now.getTime() > eggDate.getTime();
+
+    const icon = entry.weather?.[0]?.icon ?? "unknown";
+    const color = iconNameToEggDict[icon] ?? "egg-nomal";
+
+    eggs.push({
+      date: dateStr,
+      weather: icon,
+      egg_color: color,
+      is_placeholder: !entry.weather || !entry.weather[0],
+    });
+  }
+  
+  return eggs;
+}
+
+
+
+export function generateFoodsFromWeather(
+  weatherData: (WeatherData1 | undefined)[]
+): Food[] {
+  const foods: Food[] = [];
+  const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
+  
+  for (const entry of weatherData) {
+    if (!entry || !entry.dt) continue;
+
+    const date = new Date(entry.dt * 1000);
+    const dateStr = date.toISOString().split('T')[0];
+    const icon = entry.weather?.[0]?.icon ?? 'unknown';
+
+    for (const [foodType, validIcons] of Object.entries(iconToFoodsMap)) {
+      if (validIcons.includes(icon)) {
+        foods.push({
+          date: dateStr,
+          weather: icon,
+          food_type: foodType,
+          count: 0,
+          is_placeholder: !entry.weather || !entry.weather[0],
+        });
+      }
+    }
+
+    // 雷天気の場合、frogとinsectを確率で追加
+    const isToday = dateStr === todayStr;
+    const isPastNine = now.getTime() >= new Date(`${dateStr}T09:00:00+09:00`).getTime();
+
+    if (isToday && isPastNine && thunderIcons.includes(icon)) {
+      if (Math.random() < 0.5) {
+        foods.push({
+          date: dateStr,
+          weather: icon,
+          food_type: 'frog',
+          count: 1,
+          is_placeholder: false,
+        });
+      }
+
+      if (Math.random() < 0.25) {
+        foods.push({
+          date: dateStr,
+          weather: icon,
+          food_type: 'insect',
+          count: 1,
+          is_placeholder: false,
+        });
+      }
+    }
+  }
+
+  return foods;
+}
+
+/*
+export function getEggColorFromWeather(weather: string): string {
+  switch (weather) {
+    case "Clear":
+      return "/eggs/egg_yellow.jpg";
+    case "Rain":
+      return "/eggs/egg_blue.jpg";
+    case "Snow":
+      return "/eggs/egg_white.jpg";
+    case "Clouds":
+      return "/eggs/egg_gray.jpg";
+    default:
+      return "/eggs/egg_black.jpg";
+  }
+}
+*/
+/*
+export function extract9amEntries(weatherList: WeatherData1[] | undefined): Record<string, any> {
+  const result: Record<string, any> = {};
+
+  for (const entry of weatherList) {
+    const jstDate = new Date(entry.dt * 1000);
+    jstDate.setHours(jstDate.getHours() + 9);
+
+    const dateStr = jstDate.toISOString().split("T")[0];
+    const hour = jstDate.getHours();
+
+    // 9時±1時間の範囲なら候補とする
+    if (hour >= 8 && hour <= 10) {
+      // 最も9時に近いデータを保存（1日1件）
+      if (!result[dateStr] || Math.abs(hour - 9) < Math.abs(result[dateStr].jstHour - 9)) {
+        result[dateStr] = { ...entry, jstHour: hour };
+      }
+    }
+  }
+
+  return result;
+}
+*/
