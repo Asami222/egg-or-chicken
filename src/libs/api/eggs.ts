@@ -1,6 +1,7 @@
+/*
 import { createClient } from 'libs/supabase/server';
 import { useQuery } from '@tanstack/react-query';
-import { extract9amEntries, generateEggsFromWeather } from 'libs/generateFromWeather';
+import { generateEggsFromWeather } from 'libs/generateFromWeather';
 import { iconNameDict } from 'utils/weatherDict';
 import { getMissingDatesWithBlackEggs } from 'libs/blackEggsHelper';
 import { redirect } from 'next/navigation';
@@ -35,5 +36,5 @@ export const useSupabase = () => {
     staleTime: Infinity, // キャッシデータの消費期限
   });
 }
-
+*/
 

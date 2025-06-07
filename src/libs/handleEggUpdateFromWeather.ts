@@ -1,5 +1,5 @@
 import { createClient } from 'libs/supabase/server'
-import { extract9amEntries, generateEggsFromWeather } from 'libs/generateFromWeather';
+import { generateEggsFromWeather } from 'libs/generateFromWeather';
 import { redirect } from 'next/navigation';
 import { WeatherData1 } from 'utils/weatherdata';
 
@@ -14,11 +14,11 @@ export async function handleEggUpdateFromWeather(weatherList: (WeatherData1 | un
   }
 
   //const nineAmMap = extract9amEntries(weatherList);
-  const eggs = generateEggsFromWeather(weatherList, new Date());
+  const eggs = generateEggsFromWeather(weatherList);
 
   for (const egg of eggs) {
     // Supabaseに同じ日付の卵が存在するか確認
-    const { data: existingEgg, error } = await supabase
+    const { data: existingEgg } = await supabase
       .from("eggs")
       .select("*")
       .eq("user_id", user?.id)
@@ -30,8 +30,8 @@ export async function handleEggUpdateFromWeather(weatherList: (WeatherData1 | un
         user_id: user?.id,
         date: egg.date,
         weather: egg.weather,
-        egg_color: egg.eggColor,
-        is_placeholder: egg.isPlaceholder,
+        egg_color: egg.egg_color,
+        is_placeholder: egg.is_placeholder,
       });
     }
     // 既に存在する場合はスキップ（or 上書きしたいなら update に変更）

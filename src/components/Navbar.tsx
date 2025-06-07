@@ -1,24 +1,24 @@
 'use client';
 
-import { MdMyLocation, MdOutlineLocationOn } from "react-icons/md";
+//import { MdMyLocation, MdOutlineLocationOn } from "react-icons/md";
 import SearchBox from "./SearchBox";
 import { useState } from "react";
 import axios from "axios";
 import { loadingCityAtom, placeAtom } from "app/atom";
 import { useAtom } from "jotai";
 
-type Props = { location?: string}
+//type Props = { location?: string}
 
 const API_KEY = process.env.NEXT_PUBLIC_WEATHER_KEY
 
-const Navbar = ({location}: Props) => {
+const Navbar = () => {
   const [city, setCity] = useState("")
   const [error, setError] = useState("")
   //
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
-  const [place, setPlace] = useAtom(placeAtom);
-  const [_, setLoadingCity] = useAtom(loadingCityAtom);
+  const [, setPlace] = useAtom(placeAtom);
+  const [, setLoadingCity] = useAtom(loadingCityAtom);
 
   async function handleInputChange(value: string) {
     setCity(value)

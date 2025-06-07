@@ -29,5 +29,6 @@ export type Food = {
 
 export type PartialFood = Omit<Food, 'id' | 'user_id' | 'used_date'>;//外す
 export type MiniFood = Pick<Food, 'id' | 'user_id' | 'used_date'>;//取り出す
+export type MakeFood = Pick<Food, 'date' | 'weather' | 'food_type'| 'count' | 'is_placeholder' >;//取り出す
 
 export type FoodType = 'plant' | 'fruit' | 'frog' | 'insect';

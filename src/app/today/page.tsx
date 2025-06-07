@@ -2,7 +2,7 @@
 
 import { useWeatherData } from 'hooks/useWeatherData';
 import { loadingCityAtom, placeAtom } from 'app/atom';
-import { format,fromUnixTime,parseISO,addHours, } from 'date-fns';
+import { format,parseISO,addHours, } from 'date-fns';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 import Navbar from 'components/Navbar';
@@ -13,9 +13,9 @@ import { removeZero } from 'utils/weatherDict';
 import { weekNameDict } from 'utils/weatherDict';
 
 const TodayWeather = () => {
-  const [place, setPlace] = useAtom(placeAtom);
+  const [place,] = useAtom(placeAtom);
   const [loadingCity,] = useAtom(loadingCityAtom);
-  const { isPending, error, data, refetch } = useWeatherData(place);
+  const { isPending, data, refetch } = useWeatherData(place);
 
   useEffect(() => {
       refetch();
@@ -43,7 +43,7 @@ const TodayWeather = () => {
   return (
     <div>
       {/** nav bar */}
-      <div className='flex justify-center mt-6'><Navbar location={data?.city.name}/></div>
+      <div className='flex justify-center mt-6'><Navbar/></div>
       <div className='mx-auto flex flex-col gap-9 w-full pb-10 pt-4'>
         { loadingCity ? (
           <TodayPageSkeleton />

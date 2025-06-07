@@ -1,5 +1,5 @@
 import { convertKelvinToCelsius } from "utils/convertKelvinToCelsius";
-import Container from "./Container"
+import { Container } from "./Container";
 import WeatherDetails, { WeatherDetailProps } from "./WeatherDetails";
 import WeatherIcon from "./WeatherIcon"
 
@@ -21,8 +21,8 @@ const ForecastWeatherDetail = (props: ForecastWeatherDetailProps) => {
     day = "Tuesday",
     temp,
     feels_like,
-    temp_min,
-    temp_max,
+    //temp_min,
+    //temp_max,
     description
   } = props
   return (
@@ -30,7 +30,7 @@ const ForecastWeatherDetail = (props: ForecastWeatherDetailProps) => {
       {/** left */}
       <section className="flex gap-4 items-center px-4">
         <div className="flex flex-col gap-1 items-center">
-          <WeatherIcon iconname={weatherIcon}/>
+          <WeatherIcon iconname={weatherIcon} description={""}/>
           <p>{date}</p>
           <p className="text-sm">{day}</p>
         </div>

@@ -5,7 +5,7 @@ import { useWeatherData } from 'hooks/useWeatherData';
 import { loadingCityAtom, placeAtom } from 'app/atom';
 import WeatherDetail from 'components/WeatherDetail';
 import Navbar from 'components/Navbar';
-import { format,fromUnixTime,parseISO,addHours, } from 'date-fns';
+import { format,parseISO,addHours, } from 'date-fns';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 import { removeZero } from 'utils/weatherDict';
@@ -16,7 +16,7 @@ import { useClearUsedDate } from 'hooks/useClearUsedDate';
 
 const Weather = () => {
 
-  const [place, setPlace] = useAtom(placeAtom);
+  const [place, ] = useAtom(placeAtom);
   const [loadingCity,] = useAtom(loadingCityAtom);
   const { isPending, error: weatherError, data, refetch } = useWeatherData(place);
   const { data: forecastFoods, isLoading, error: foodError } = useForecastFoods();
@@ -87,7 +87,7 @@ const Weather = () => {
   return (
     <div>
       {/** nav bar */}
-      <div className='flex justify-center mt-6'><Navbar location={data?.city.name}/></div>
+      <div className='flex justify-center mt-6'><Navbar/></div>
       <div className='mx-auto flex flex-col gap-9 w-full pb-10 pt-4'>
         { loadingCity ? (
           <WeatherSkeleton />

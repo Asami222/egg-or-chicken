@@ -1,4 +1,4 @@
-import { NewEgg, Food } from "utils/types";
+import { NewEgg, MakeFood } from "utils/types";
 import { WeatherData1 } from "utils/weatherdata";
 import { iconNameToEggDict, iconToFoodsMap, thunderIcons } from "utils/weatherDict";
 
@@ -37,8 +37,8 @@ export function generateEggsFromWeather(
 // libs/generateFoodsFromWeather.ts
 export function generateFoodsFromWeather(
   weatherData: WeatherData1 | undefined
-): Omit<Food, "user_id">[] {
-  const foods: Omit<Food, "user_id">[] = [];
+): MakeFood[] {
+  const foods: MakeFood[] = [];
 
   if (!weatherData || typeof weatherData.dt !== "number") return foods;
 

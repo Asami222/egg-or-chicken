@@ -8,9 +8,9 @@ import { NavIcon } from "./WeatherIcon";
 
 const NavWeather = () => {
 
-  const [place, setPlace] = useAtom(placeAtom);
+  const [place,] = useAtom(placeAtom);
   const [loadingCity,] = useAtom(loadingCityAtom);
-  const { isPending, error, data, refetch } = useWeatherData(place);
+  const { isPending, data, refetch } = useWeatherData(place);
 
   useEffect(() => {
     refetch();

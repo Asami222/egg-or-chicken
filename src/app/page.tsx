@@ -7,7 +7,7 @@ import { useFilteredWeatherData } from "hooks/useFilteredWeatherData"
 //import { redirect } from 'next/navigation'
 import { Container } from "components/Container";
 import { ImgBox } from "components/ui/img";
-import { RenderIcons, eggdata } from "components/TopDetail";
+import { RenderIcons } from "components/TopDetail";
 //import { handleEggUpdateFromWeather } from 'libs/handleEggUpdateFromWeather';
 import { useEggsAndWings } from 'hooks/useItems';
 import { Egg } from 'utils/types';
@@ -23,7 +23,7 @@ const Home = () => {
   console.log("eggs",items)
 
   const now = new Date();
-  const todayStr = now.toISOString().split('T')[0]; // 今日の日付 YYYY-MM-DD
+  //const todayStr = now.toISOString().split('T')[0]; // 今日の日付 YYYY-MM-DD
   const eggsBeforeTodayNine = items?.eggs.filter((egg) => {
     const eggDate = new Date(`${egg.date}T09:00:00+09:00`);
     return eggDate < now;
