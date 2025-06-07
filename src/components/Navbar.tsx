@@ -31,6 +31,7 @@ const Navbar = () => {
         setError('');
         setShowSuggestions(true)
       } catch (error) {
+        console.error('Failed to fetch city suggestions:', error);
         setSuggestions([]);
         setShowSuggestions(false)
       }

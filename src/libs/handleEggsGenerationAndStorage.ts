@@ -56,6 +56,7 @@ export async function handleEggsGenerationAndStorage(
   newEggs.push(...additionalEggs);
 }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const inserts: any[] = [];
   const updates: { egg: NewEgg }[] = [];
 
@@ -108,7 +109,7 @@ export async function handleEggsGenerationAndStorage(
     blue: beforeNineEggs.filter(e => e.egg_color === '/obtain/egg-blue.webp'),
     gold: beforeNineEggs.filter(e => e.egg_color === '/obtain/egg-gold.webp'),
   };
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const newEggsToInsert: any[] = [];
   const eggIdsToDelete: number[] = [];
 
