@@ -5,11 +5,9 @@ import { redirect } from "next/navigation";
 import { createClient } from "libs/supabase/server";
 import Separator from "components/separator";
 
-interface PageProps {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
 
-export default async function LoginPage({ searchParams }: PageProps) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function LoginPage({ searchParams }: any) {
   const message = typeof searchParams?.message === 'string' ? searchParams.message : '';
 
   const supabase = await createClient();

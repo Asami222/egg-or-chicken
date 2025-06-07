@@ -3,7 +3,7 @@ import { client as supabase } from 'libs/supabase/client';
 import { generateFoodsFromWeather } from './generateFromWeather';
 //import { incrementItemCount } from 'utils/incrementItemCount';
 import { WeatherData1 } from 'utils/weatherdata';
-import { Egg, Wing, Food } from 'utils/types';
+import { Egg, Wing, Partial2Food } from 'utils/types';
 import { handleEggsGenerationAndStorage } from './handleEggsGenerationAndStorage';
 import { handleWingGenerationAndEvolution } from './handleWingGenerationAndEvolution';
 //import { iconToFoodsMap, thunderIcons } from "utils/weatherDict";
@@ -55,11 +55,11 @@ export async function generateAndStoreEggsAndWing(
 export async function generateAndStoreFoods(
   weatherData: WeatherData1 | undefined,
   userId: string
-): Promise<Food[]> {
+): Promise<Partial2Food[]> {
   const generatedFoods = generateFoodsFromWeather(weatherData);
 
   // userIdをマージ
-  const foodsWithUserId: Food[] = generatedFoods.map((food) => ({
+  const foodsWithUserId: Partial2Food[] = generatedFoods.map((food) => ({
     ...food,
     user_id: userId,
   }));
@@ -88,4 +88,5 @@ export async function generateAndStoreFoods(
     });
   }
   */}
+
 
