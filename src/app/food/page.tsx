@@ -1,9 +1,13 @@
 "use client";
 
+import { client as supabase } from 'libs/supabase/client';
+import { parse, format } from 'date-fns';
+import { ja } from 'date-fns/locale';
+//import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
 //import Image, { StaticImageData } from "next/image"
 import { useAtom } from 'jotai';
 import { placeAtom } from 'app/atom';
-import { useFilteredWeatherData } from 'hooks/useFilteredWeatherData';
+import { useFilteredTodayWeatherData } from 'hooks/useFilteredWeatherData';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { Container } from "components/Container"
 //import plantImg from "../../../public/food/plant.webp"
@@ -15,84 +19,157 @@ import { useState } from "react"
 import { IoCloseOutline } from "react-icons/io5";
 import { ImgBox } from 'components/ui/img';
 import { useFoods } from 'hooks/useItems';
-import type { Food, FoodType } from 'utils/types';
+import type { Food, FoodType, PartialFood } from 'utils/types';
 
-/*
-const imgdata = [
-  {
-    src: '/food/plant.webp',
-    alt: "植物",
-    number: 20,
-    exchange: '/food/fruit.webp',
-  },
-  {
-    src: '/food/insect.webp',
-    alt: "昆虫",
-    number: 0,
-  },
-  {
-    src: '/food/frog.webp',
-    alt: "両生類",
-    number: 5,
-    exchange: '/food/insect.webp',
-  },
-  {
-    src: '/food/fruit.webp',
-    alt: "果実",
-    number: 10,
-    exchange: '/food/frog.webp',
-  }
-]
-*/
+
+const imgdata: {
+  food_type: FoodType;
+  src: string;
+  alt: string;
+  exchange?: string;
+}[] = [
+  { food_type: "plant", src: '/food/plant.webp', alt: "植物", exchange: '/food/fruit.webp' },
+  { food_type: "fruit", src: '/food/fruit.webp', alt: "果実", exchange: '/food/frog.webp' },
+  { food_type: "frog", src: '/food/frog.webp', alt: "両生類", exchange: '/food/insect.webp' },
+  { food_type: "insect", src: '/food/insect.webp', alt: "昆虫" },
+];
 
 type FoodDialogData = {
-  food: Food;
+  food: PartialFood;
   src: string;
   alt: string;
   exchange?: string;
 };
 
 const Food = () => {
-
   const [place] = useAtom(placeAtom);
-  const { data: weatherData, isPending: weatherLoading, error } = useFilteredWeatherData(place);
-  const { data: foods, isPending: foodsLoading } = useFoods(weatherData);
+  const { data: weatherData, isPending: weatherLoading, error } = useFilteredTodayWeatherData(place);
+  const { data: foodsData, isPending: foodsLoading, refetch } = useFoods(weatherData);
   const [selectedItem, setSelectedItem] = useState<FoodDialogData | undefined>(undefined);
-  const foodOrder: FoodType[] = ['plant', 'fruit', 'frog', 'insect'];
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const foodOrder: FoodType[] = ['plant', 'fruit', 'frog', 'insect'];
   if (weatherLoading || foodsLoading) return <p>読み込み中...</p>;
   if (error) return <div>エラーが発生しました</div>;
-  if (foods == undefined) return <div>フードが未定義です</div>;
+  if (!foodsData) return <p>データが取得できませんでした</p>;
   /*
   function open(item) {
     setSelectedItem(item);
   }
   */
 
- function open(food: Food) {
-  const dialogData: FoodDialogData = {
-    food,
-    src: `/food/${food.food_type}.webp`,
-    alt: {
-      plant: "植物",
-      fruit: "果実",
-      frog: "両生類",
-      insect: "昆虫",
-    }[food.food_type] as string,
-    exchange: {
-      plant: '/food/fruit.webp',
-      fruit: '/food/frog.webp',
-      frog: '/food/insect.webp',
-    }[food.food_type], // optional
-  };
+  // Supabaseのfoodsをマップ形式に変換（food_type -> Food）
+ // const foodMap = Object.fromEntries(foods.map(f => [f.food_type, f]));
 
-  setSelectedItem(dialogData);
+  // imgdataとfoodsをマージ
+  const fullFoodList: FoodDialogData[] = imgdata.map(data => {
+    const count = foodsData.countMap[data.food_type] ?? 0;
+    return {
+      food: {
+        food_type: data.food_type,
+        count,
+        date: "",
+        weather: "",
+        is_placeholder: false,
+      },
+      src: data.src,
+      alt: data.alt,
+      exchange: data.exchange,
+    };
+  });
+
+  const handleDeleteFood = async (countToUse: number, form: { date: string[]; number: number }) => {
+    setErrorMessage(null); // 初期化
+    const { data: user, error: userError } = await supabase.auth.getUser();
+    if (!user || !selectedItem || !form.date) return;
+    if (userError || !user?.user) {
+      console.error("ユーザー情報の取得失敗:", userError);
+      return;
+    }
+
+    const userId = user.user.id;
+    // 未使用のfoodsデータを全件（countToUse * 日数分）取得
+    const totalCount = countToUse * form.date.length;
+
+    const { data, error } = await supabase
+    .from("foods")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("food_type", selectedItem.food.food_type)
+    .is("used_date", null) // 未使用のものだけ対象にする
+    .order("created_at", { ascending: true })
+    .limit(totalCount);
+
+  if (error || !data) {
+    console.error("取得失敗:", error);
+    return;
+  }
+
+  const duplicatedDates: string[] = [];
+
+  // 日付ごとにデータを分割して used_date を更新
+  for (let i = 0; i < form.date.length; i++) {
+    const rawDate = form.date[i];
+    const cleanedDate = rawDate.replace(/\(.*?\)/g, ''); // "6月5日(木)" → "6月5日"
+    const parsedDate = parse(cleanedDate, 'M月d日', new Date(), { locale: ja });
+    const usedDate = format(parsedDate, 'yyyy-MM-dd'); // → "2025-06-05"
+    //const usedDate = parsed.toISOString().split('T')[0]; // "2025-06-05"
+
+    // 事前に Supabase で重複確認
+    const { data: existing, error: existError } = await supabase
+      .from("foods")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("food_type", selectedItem.food.food_type)
+      .eq("used_date", usedDate);
+
+    if (existError) {
+      console.error("重複チェック失敗:", existError);
+      continue;
+    }
+
+    if (existing && existing.length > 0) {
+      // すでに存在 → スキップ + エラーメッセージ表示
+      duplicatedDates.push(rawDate);
+      continue;
+    }
+
+    // 対象IDを slice で取り出す
+    const start = i * countToUse;
+    const end = start + countToUse;
+    const idsToUpdate = data.slice(start, end).map(item => item.id);
+
+    if (idsToUpdate.length === 0) {
+      console.warn(`日付 ${usedDate} に対するフードが不足しています`);
+      continue;
+    }
+
+    const { error: updateError } = await supabase
+      .from("foods")
+      .update({ used_date: usedDate })
+      .in("id", idsToUpdate);
+
+    if (updateError) {
+      console.error(`日付 ${usedDate} の使用記録更新失敗:`, updateError);
+    } else {
+      console.log(`${idsToUpdate.length} 件の food を ${usedDate} に使用として記録しました`);
+    }
+  }
+  // エラーがあればまとめて表示
+  if (duplicatedDates.length > 0) {
+    setErrorMessage(
+      `以下の日付にはすでに ${selectedItem.food.food_type} が登録されています: ${duplicatedDates.join('、')}`
+    );
+  }
+  await refetch();
+};
+
+ function open(foodData: FoodDialogData) {
+  setSelectedItem(foodData);
 }
   function close() {
     setSelectedItem(undefined);
   }
-
-  console.log("foods",foods)
 
   return (
     <div className='mx-auto flex flex-col gap-9 w-full pb-10 pt-6'>
@@ -102,28 +179,24 @@ const Food = () => {
           （天気予報は変わる可能性があるので注意しましょう）
         </p>
         <Container className="px-6 py-5">
-          { foods.length === 0 ? (
-            <p className='mx-auto'>現在食べ物はありません</p>
-          ):(
             <ul className="grid grid-cols-3 gap-x-2 sm:gap-x-4 gap-y-8 mx-auto">
             { foodOrder.flatMap( type => 
-              foods
-              .filter(food => food.food_type === type)
+              fullFoodList
+              .filter(d => d.food.food_type === type)
               .map((d,i) => (
                 <li key={`${type}-${i}`} className="flex flex-col gap-2">
                   <ImgBox
-                    src={`/food/${d.food_type}.webp`}
-                    description={d.food_type}
+                    src={d.src}
+                    description={d.alt}
                     sizes="23.1vw"
                     className="h-[90px] w-[90px] cursor-pointer hover:opacity-80"
                     onClick={() => open(d)}
                   />
-                  <p className="text-xs text-center font-medium">{d.count}</p>
+                  <p className="text-xs text-center font-medium">{d.food.count}</p>
                 </li>
               ))
             )}
           </ul>
-          )}
         </Container>
       </section>
 
@@ -143,7 +216,7 @@ const Food = () => {
                       <ImgBox src={selectedItem.src} description={selectedItem.alt} sizes="18vw" className="h-[70px] w-[70px]"/>
                       <p className="font-medium text-slate-800">{selectedItem.food.count}</p>
                     </div>
-                  <FoodCheckbox imgexchange={selectedItem.exchange} imgdescription={selectedItem.alt} />
+                  <FoodCheckbox imgexchange={selectedItem.exchange} imgdescription={selectedItem.alt} maxCount={selectedItem.food.count} onDelete={handleDeleteFood} errorMessage={errorMessage} onClose={close}/>
                     <div className="mt-4 flex justify-end">
                       <button onClick={close} className="flex gap-1 items-center cursor-pointer text-slate-600 hover:text-slate-800">
                         <IoCloseOutline />

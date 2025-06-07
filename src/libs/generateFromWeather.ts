@@ -1,4 +1,4 @@
-import { Egg, Food } from "utils/types";
+import { NewEgg, Food } from "utils/types";
 import { WeatherData1 } from "utils/weatherdata";
 import { iconNameToEggDict, iconToFoodsMap, thunderIcons } from "utils/weatherDict";
 
@@ -6,8 +6,8 @@ import { iconNameToEggDict, iconToFoodsMap, thunderIcons } from "utils/weatherDi
 
 export function generateEggsFromWeather(
   weatherData: (WeatherData1 | undefined)[]
-): Egg[] {
-  const eggs: Egg[] = [];
+): NewEgg[] {
+  const eggs: NewEgg[] = [];
   //const now = new Date();
 
  
@@ -31,67 +31,59 @@ export function generateEggsFromWeather(
       is_placeholder: !entry.weather || !entry.weather[0],
     });
   }
-  
   return eggs;
 }
 
-
-
+// libs/generateFoodsFromWeather.ts
 export function generateFoodsFromWeather(
-  weatherData: (WeatherData1 | undefined)[]
-): Food[] {
-  const foods: Food[] = [];
+  weatherData: WeatherData1 | undefined
+): Omit<Food, "user_id">[] {
+  const foods: Omit<Food, "user_id">[] = [];
+
+  if (!weatherData || typeof weatherData.dt !== "number") return foods;
+
+  const date = new Date(weatherData.dt * 1000);
+  const dateStr = date.toISOString().split("T")[0];
+  const icon = weatherData.weather?.[0]?.icon ?? "unknown";
   const now = new Date();
-  const todayStr = now.toISOString().split('T')[0];
-  
-  for (const entry of weatherData) {
-    if (!entry || !entry.dt) continue;
+  const isAfterNine = now.getHours() >= 9;
 
-    const date = new Date(entry.dt * 1000);
-    const dateStr = date.toISOString().split('T')[0];
-    const icon = entry.weather?.[0]?.icon ?? 'unknown';
-
-    for (const [foodType, validIcons] of Object.entries(iconToFoodsMap)) {
-      if (validIcons.includes(icon)) {
-        foods.push({
-          date: dateStr,
-          weather: icon,
-          food_type: foodType,
-          count: 0,
-          is_placeholder: !entry.weather || !entry.weather[0],
-        });
-      }
+  for (const [foodType, validIcons] of Object.entries(iconToFoodsMap)) {
+    if (validIcons.includes(icon)) {
+      foods.push({
+        date: dateStr,
+        weather: icon,
+        food_type: foodType,
+        count: 1,
+        is_placeholder: !isAfterNine,
+      });
     }
+  }
 
-    // 雷天気の場合、frogとinsectを確率で追加
-    const isToday = dateStr === todayStr;
-    const isPastNine = now.getTime() >= new Date(`${dateStr}T09:00:00+09:00`).getTime();
-
-    if (isToday && isPastNine && thunderIcons.includes(icon)) {
-      if (Math.random() < 0.5) {
-        foods.push({
-          date: dateStr,
-          weather: icon,
-          food_type: 'frog',
-          count: 1,
-          is_placeholder: false,
-        });
-      }
-
-      if (Math.random() < 0.25) {
-        foods.push({
-          date: dateStr,
-          weather: icon,
-          food_type: 'insect',
-          count: 1,
-          is_placeholder: false,
-        });
-      }
+  if (thunderIcons.includes(icon)) {
+    if (Math.random() < 0.5) {
+      foods.push({
+        date: dateStr,
+        weather: icon,
+        food_type: "frog",
+        count: 1,
+        is_placeholder: false,
+      });
+    }
+    if (Math.random() < 0.25) {
+      foods.push({
+        date: dateStr,
+        weather: icon,
+        food_type: "insect",
+        count: 1,
+        is_placeholder: false,
+      });
     }
   }
 
   return foods;
 }
+
 
 /*
 export function getEggColorFromWeather(weather: string): string {

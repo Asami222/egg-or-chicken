@@ -30,3 +30,11 @@ export const useFilteredWeatherData = (place: string) => {
 
   return { data: newFirstDataForEachDate, isPending, error, refetch };
 };
+
+export const useFilteredTodayWeatherData = (place: string) => {
+  const { data, isPending, error, refetch } = useWeatherData(place);
+
+  const firstData = data?.list[0]
+
+  return { data: firstData, isPending, error, refetch };
+};

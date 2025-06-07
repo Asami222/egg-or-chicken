@@ -42,7 +42,7 @@ export const iconNameToEggDict: Record<string, string> = {
 }
 
 export const iconToFoodsMap: Record<string, string[]> = {
-  plant: ['01d', '01n', '02d', '02n', '09d', '09n', '10d', '10n'],
+  plant: ['01d', '01n', '02d', '02n', '09d', '09n', '10d', '10n','04d', '04n'],
   fruit: ['01d', '01n'],
   frog: ['11d','11n'],
   insect: ['11d','11n'],

@@ -9,13 +9,22 @@ import { format } from 'date-fns';
 import { shortWeekNameDict } from 'utils/weatherDict';
 import { ImgBox } from './ui/img';
 
+type FormState = {
+  date: string[];
+  number: number;
+};
+
 type FoodCheckboxProps = {
     imgexchange?: string
     imgdescription: string
+    maxCount: number;
+    errorMessage?: string | null;
+    onDelete: (count: number, form: FormState) => void;
+    onClose: () => void
 }
 
 
-const FoodCheckbox = (props: FoodCheckboxProps) => {
+const FoodCheckbox = ({ imgexchange, imgdescription, maxCount, onDelete, errorMessage, onClose }: FoodCheckboxProps) => {
 
   const [place] = useAtom(placeAtom);
   const { data, isPending, error } = useFilteredWeatherData(place);
@@ -31,15 +40,10 @@ const FoodCheckbox = (props: FoodCheckboxProps) => {
     });
   }, [data]);
 
-  const initialFormValue = setting[0] ? [setting[0].date] : []; // setting[0] が存在するかチェック
-
-  type FormState = {
-  date: string[];
-  number: number;
-};
+  //const initialFormValue = setting[0] ? [setting[0].date] : []; // setting[0] が存在するかチェック
   
   const [ form, setForm ] = useState<FormState>({
-    date: initialFormValue,
+    date: [],
     number: 0,
   });
 /*
@@ -55,6 +59,7 @@ const FoodCheckbox = (props: FoodCheckboxProps) => {
     let newDates = [...form.date];
 
     if (checked) {
+      if (newDates.length >= maxCount) return;
       if (!newDates.includes(value)) {
         newDates.push(value);
       }
@@ -67,22 +72,31 @@ const FoodCheckbox = (props: FoodCheckboxProps) => {
       date: newDates,
     }));
   };
+  const maxExchangeable = Math.floor(maxCount / 5);
 
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value, 10);
-    setForm((prev) => ({
-      ...prev,
-      number: isNaN(value) ? 0 : value, // NaN対策
-    }));
+    let value = parseInt(e.target.value, 10);
+    if (isNaN(value)) value = 0;
+    if (value > maxExchangeable) value = maxExchangeable;
+    setForm((prev) => ({ ...prev, number: value }));
   };
 
   const show = () => {
+    const checkCount = form.date.length;
+    const exchangeCount = form.number ? form.number * 5 : 0;
+    const totalToDelete = checkCount + exchangeCount;
+    if (totalToDelete > 0) {
+      onDelete(totalToDelete, form);
+    }
     console.log("選択された日付:", form.date);
     console.log("選択された個数:", form.number);
+    if (!errorMessage) {
+      onClose();
+    }
   }
 
   return (
-    <form className='text-center'>
+    <form className='text-center' onSubmit={(e) => e.preventDefault()}>
       <fieldset>
         <legend className="text-sm font-medium text-slate-800 mb-4">設定する日付をチェックしてください</legend>
           <div className='flex flex-col gap-4'>
@@ -109,13 +123,18 @@ const FoodCheckbox = (props: FoodCheckboxProps) => {
             ))}
           </div>
       </fieldset>
-      { props.imgexchange && 
+      { imgexchange && 
       <div className='flex gap-2 items-center mt-4 justify-center'>
-          <ImgBox src={props.imgexchange} description={props.imgdescription} sizes='13vw' className='h-[50px] w-[50px]'/>
+          <ImgBox src={imgexchange} description={imgdescription} sizes='13vw' className='h-[50px] w-[50px]'/>
           <input type='number' id="tentacles" name="tentacles" min="1" max="50" value={form.number} onChange={handleNumberChange} className='border border-sky-200 rounded'/>
           <p className='text-slate-800'>個と交換</p>
       </div>
       }
+      {errorMessage && (
+        <div className="text-red-500 text-sm mt-2 text-center">
+          {errorMessage}
+        </div>
+      )}
       <button type='button' onClick={show} className="px-4 py-2 mt-6 bg-sky-600 text-sm text-white font-semibold rounded-lg hover:bg-sky-700 transition">設定する</button>
     </form>
   )

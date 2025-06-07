@@ -1,6 +1,6 @@
 import { ImgBox } from "components/ui/img";
 import { IoIosMore } from "react-icons/io";
-
+/*
 type DataProps = {
   src: string
   alt: string
@@ -38,11 +38,11 @@ export const eggdata = [
     className: 'w-[40px]'
   },
 ] satisfies DataProps[];
-
+*/
 const MAX_ICONS = 6;
 
 interface RenderIconsProps {
-  src: string
+  src: string | string[]
   alt: string
   count: number
   layout?: '7' | '8'
@@ -62,9 +62,15 @@ export const RenderIcons = ({src, alt, count, layout='8', className='w-[30px]'}:
 
   return (
   <div className={containerClass}>
-    {Array.from({ length: displayCount }).map((_, i) => (
-      <ImgBox key={i} src={src} description={alt} sizes="7.7vw" className={`h-[40px] ${className}`} />
-    ))}
+    {
+        Array.isArray(src)
+          ? src.slice(0, MAX).map((img, i) => (
+              <ImgBox key={i} src={img} description={alt} sizes="7.7vw" className={`h-[40px] w-[40px]`} />
+            ))
+          : Array.from({ length: displayCount }).map((_, i) => (
+              <ImgBox key={i} src={src} description={alt} sizes="7.7vw" className={`h-[40px] ${className}`} />
+            ))
+      }
     {showEllipsis && <IoIosMore />}
   </div>
   )

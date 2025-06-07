@@ -9,12 +9,18 @@ import { format,fromUnixTime,parseISO,addHours, } from 'date-fns';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 import { removeZero } from 'utils/weatherDict';
+import { useForecastFoods } from 'hooks/useForecastFoods';
+import { ImgBox } from 'components/ui/img';
+import { useClearUsedDate } from 'hooks/useClearUsedDate';
+
 
 const Weather = () => {
 
   const [place, setPlace] = useAtom(placeAtom);
   const [loadingCity,] = useAtom(loadingCityAtom);
-  const { isPending, error, data, refetch } = useWeatherData(place);
+  const { isPending, error: weatherError, data, refetch } = useWeatherData(place);
+  const { data: forecastFoods, isLoading, error: foodError } = useForecastFoods();
+  const { mutate: clearUsedDate }  = useClearUsedDate();
 
   useEffect(() => {
     refetch();
@@ -42,6 +48,25 @@ const Weather = () => {
   const removeFirstDataForEachDate = firstDataForEachDate.slice(1, 6);
   const newFirstDataForEachDate = removeFirstDataForEachDate.filter(item => item !== undefined);
 
+  // FoodType 型定義
+  type FoodType = "plant" | "fruit" | "frog" | "insect";
+
+  // food_type => src のマップ
+  const foodImageMap: Record<FoodType, string> = {
+    plant: "/food/plant.webp",
+    fruit: "/food/fruit.webp",
+    frog: "/food/frog.webp",
+    insect: "/food/insect.webp",
+  };
+
+  // foods を used_date ごとにグループ化
+  const foodsByDate = forecastFoods?.reduce((acc, item) => {
+    if (!item.used_date) return acc;
+    acc[item.used_date] = acc[item.used_date] || [];
+    acc[item.used_date].push(item.food_type as FoodType); // ★ 型アサーション
+    return acc;
+  }, {} as Record<string, FoodType[]>);
+
   //console.log(uniqueDates)
   //console.log(parseISO(firstData?.dt_txt ?? ""))
 
@@ -51,11 +76,13 @@ const Weather = () => {
   // ISOをパース → 9時間加算 → 好きなフォーマットで表示
   //const jstFirstDate = addHours(parseISO(firstData?.dt_txt.replace(" ", "T") ?? ''), 9);
 
-  if (isPending) return (
+  if (isPending || isLoading) return (
     <div className='flex items-center min-h-screen justify-center'>
       <p className='animate-bounce'>Loading...</p>
     </div>
   )
+  
+  if (weatherError || foodError) return <div>エラー</div>;
 
   return (
     <div>
@@ -83,17 +110,40 @@ const Weather = () => {
         {/** 5 day forcast data */}
         <section className='flex w-full flex-col gap-4'>
           <p className='text-2xl text-sky-700 text-center'>Forecast</p>
-          {newFirstDataForEachDate.map((d,i) => (
-          <WeatherDetail 
-            key={i}
-            description={d?.weather[0].description ?? ""}
-            weatherIcon={d?.weather[0].icon ?? "01d"}
-            date={removeZero(parseISO(d?.dt_txt ?? ""))}
-            week={format(parseISO(d?.dt_txt ?? ""), "EEEE")}
-            time={format(parseISO(d?.dt_txt), 'h:mm a')}
-            temp={d?.main.temp ?? 0}
-          />
-        ))}
+          {newFirstDataForEachDate.map((d,i) => {
+            const forecastDate = format(parseISO(d?.dt_txt ?? ""), "yyyy-MM-dd");
+            const foodTypes = foodsByDate?.[forecastDate] || [];
+            return (
+              <div key={i}>
+                <WeatherDetail 
+                  description={d?.weather[0].description ?? ""}
+                  weatherIcon={d?.weather[0].icon ?? "01d"}
+                  date={removeZero(parseISO(d?.dt_txt ?? ""))}
+                  week={format(parseISO(d?.dt_txt ?? ""), "EEEE")}
+                  time={format(parseISO(d?.dt_txt), 'h:mm a')}
+                  temp={d?.main.temp ?? 0}
+                />
+                <div className="flex justify-end gap-1 mt-1">
+                  {foodTypes.map((type, index) => {
+                    const food = forecastFoods?.find(
+                      (f) => f.food_type === type && f.used_date === forecastDate
+                    );
+                    if (!food) return null;
+                    return (
+                    <ImgBox 
+                      key={index} 
+                      src={foodImageMap[type]} 
+                      description={type} 
+                      sizes="10.3vw" 
+                      className="h-[40px] w-[40px] cursor-pointer hover:opacity-80 rounded-md bg-white/35"
+                      onClick={() => clearUsedDate(food.id)}
+                    />
+                    );
+                  })}
+                </div>
+              </div>
+            )
+          })}
         </section>
         </> )}
         </div>
