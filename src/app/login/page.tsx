@@ -5,14 +5,12 @@ import { redirect } from "next/navigation";
 import { createClient } from "libs/supabase/server";
 import Separator from "components/separator";
 
-type Props = {
-  searchParams?: {
-    message?: string;
-  };
-};
+interface PageProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
 
-export default async function LoginPage({ searchParams }: Props) {
-  const message = searchParams?.message ?? '';
+export default async function LoginPage({ searchParams }: PageProps) {
+  const message = typeof searchParams?.message === 'string' ? searchParams.message : '';
 
   const supabase = await createClient();
 
