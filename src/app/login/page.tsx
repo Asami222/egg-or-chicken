@@ -6,9 +6,8 @@ import { createClient } from "libs/supabase/server";
 import Separator from "components/separator";
 
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default async function LoginPage({ searchParams }: any) {
-  const message = typeof searchParams?.message === 'string' ? searchParams.message : '';
+export default async function LoginPage({ searchParams }: { searchParams: URLSearchParams;}) {
+  const message = typeof searchParams.get === 'function' ? searchParams.get('message') ?? '' : '';
 
   const supabase = await createClient();
 

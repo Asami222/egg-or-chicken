@@ -11,16 +11,16 @@ import { RenderIcons } from "components/TopDetail";
 //import { handleEggUpdateFromWeather } from 'libs/handleEggUpdateFromWeather';
 import { useEggsAndWings } from 'hooks/useItems';
 import { Egg } from 'utils/types';
-
+import { useEnsureProfile } from 'hooks/useEnsureProfile';
 
 const Home = () => {
+  useEnsureProfile();
   const [place] = useAtom(placeAtom);
   const { data: weatherData, isPending: weatherLoading, error } = useFilteredWeatherData(place);
   const { data: items, isPending: eggsLoading } = useEggsAndWings(weatherData);
 
   if (weatherLoading || eggsLoading) return <p>読み込み中...</p>;
   if (error) return <div>エラーが発生しました</div>;
-  console.log("eggs",items)
 
   const now = new Date();
   //const todayStr = now.toISOString().split('T')[0]; // 今日の日付 YYYY-MM-DD
@@ -28,8 +28,11 @@ const Home = () => {
     const eggDate = new Date(`${egg.date}T09:00:00+09:00`);
     return eggDate < now;
   });
+  const EXCLUDED_WING_IMAGES = ['/chicken.webp'];
   const wings = items?.wings
-  const wingImages = wings?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map((wing) => wing.wing_image);
+  const wingImages = wings
+  ?.filter(wing => !EXCLUDED_WING_IMAGES.includes(wing.wing_image)) // ← 肉は除外
+  .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map((wing) => wing.wing_image);
   //wingImages = ['/img/1.webp', '/img/2.webp', '/img/3.webp']
   const isEvolved = wings?.some(w => w.wing_image === '/chicken.webp');
 
@@ -66,7 +69,7 @@ const eggCounts = Object.entries(countByEggColor(eggsBeforeTodayNine)).map(
     <div className="flex flex-col w-full py-4 items-center gap-10 mt-10">
       <div className="flex justify-around pl-4 w-full">
       { isEvolved ? 
-        <ImgBox src="/chicken.webp" description="肉" sizes="72vw" className="h-[282px] w-[280px]"/>
+        <ImgBox src="/chicken.webp" description="肉" sizes="72vw" className="h-[225px] w-[223px]"/>
         :
         <ImgBox src="/bird.webp" description="鳥" sizes="72vw" className="h-[282px] w-[280px]"/>
       }
@@ -79,10 +82,12 @@ const eggCounts = Object.entries(countByEggColor(eggsBeforeTodayNine)).map(
             <p className="font-semibold">{d.count}</p>
           </div>
         ))}
+       {wingImages && wingImages.length > 0 && (
           <div className="flex justify-between items-center w-full">
-            <RenderIcons src={wingImages ?? []} alt='羽根' count={wingImages?.length ?? 0}/>
-            <p className="font-semibold">{wingImages?.length ?? 0}</p>
+            <RenderIcons src={wingImages} alt="羽根" count={wingImages.length} />
+            <p className="font-semibold">{wingImages.length}</p>
           </div>
+        )}
         </div>
       </Container>
     </div>

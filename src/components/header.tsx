@@ -1,14 +1,14 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
-import { createClient } from "libs/supabase/server";
-import { signOut } from "app/login/actions";
 import feedImg from "../../public/svg/feed.svg"
 import howtoImg from "../../public/svg/howto.svg"
 //import sunnyImg from "../../public/svg/sunny.svg"
-import loginImg from "../../public/svg/login.svg"
-import logoutImg from "../../public/svg/logout.svg"
 import NavWeather from "./NavWeather";
+import LogoutButton from "./LogoutButton"; 
 
+// クライアント側のみで動かすため、動的 import（SSR無効）
 
 const categories = [
   {
@@ -23,13 +23,7 @@ const categories = [
   },
 ]
 
-const Header = async() => {
-
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+const Header = () => {
 
   return (
     <header className="flex justify-center bg-[#EBF3FF] sticky top-0 left-0 z-50">
@@ -59,19 +53,7 @@ const Header = async() => {
             </li>
           ))}
           <li>
-            <form>
-              <button formAction={signOut} className="relative w-[35px] h-[35px] align-middle hover:opacity-80">
-                <Image
-                  quality="85"
-                  src={user ? loginImg : logoutImg}
-                  alt="ログイン状況"
-                  sizes="10.3vw"
-                  fill
-                  style={{objectFit:"contain", objectPosition:'50% 50%'}}
-                  priority
-                />
-              </button>
-            </form>
+              <LogoutButton />
           </li>
         </ul>
       </nav>

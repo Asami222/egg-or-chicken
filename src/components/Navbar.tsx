@@ -1,11 +1,12 @@
 'use client';
 
 //import { MdMyLocation, MdOutlineLocationOn } from "react-icons/md";
+import { useEffect, useState } from "react";
 import SearchBox from "./SearchBox";
-import { useState } from "react";
 import axios from "axios";
 import { loadingCityAtom, placeAtom } from "app/atom";
 import { useAtom } from "jotai";
+import { getUserPlace, saveUserPlace } from "libs/userPlace";
 
 //type Props = { location?: string}
 
@@ -19,6 +20,17 @@ const Navbar = () => {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [, setPlace] = useAtom(placeAtom);
   const [, setLoadingCity] = useAtom(loadingCityAtom);
+
+  // 初期表示時、Supabaseから都市取得
+  useEffect(() => {
+    const init = async () => {
+      const savedCity = await getUserPlace();
+      if (savedCity) {
+        setPlace(savedCity);
+      }
+    };
+    init();
+  }, [setPlace]);
 
   async function handleInputChange(value: string) {
     setCity(value)
@@ -46,20 +58,21 @@ const Navbar = () => {
     setShowSuggestions(false)
   }
 
-  function handleSubmitSearch(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmitSearch(e: React.FormEvent<HTMLFormElement>) {
     setLoadingCity(true);
     e.preventDefault()
-    if(suggestions.length == 0) {
+
+    if (suggestions.length === 0) {
       setError("Location not found");
-      setLoadingCity(false)
-    } else {
-      setError("")
-      setTimeout(() => {
-        setLoadingCity(false);
-        setPlace(city)
-        setShowSuggestions(false)
-      },500)
+      setLoadingCity(false);
+      return;
     }
+    
+    setError("")
+    setPlace(city);
+    await saveUserPlace(city);
+    setShowSuggestions(false);
+    setLoadingCity(false);
   }
 /*
   function handleCurrentLocation() {

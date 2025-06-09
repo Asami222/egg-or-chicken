@@ -27,7 +27,6 @@ const Weather = () => {
   },[place,refetch])
 
   const firstData = data?.list[0]
-  console.log("data",data);
 
   const uniqueDates = [
     ...new Set(

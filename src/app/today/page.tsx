@@ -38,7 +38,6 @@ const TodayWeather = () => {
       <p className='animate-bounce'>Loading...</p>
     </div>
   )
-  console.log(todayForecasts)
 
   return (
     <div>
