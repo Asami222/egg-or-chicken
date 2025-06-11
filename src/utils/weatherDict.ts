@@ -6,8 +6,8 @@ export const iconNameDict: Record<string, string> = {
   '02n': '/svg/sunny.svg',
   '03d': '/svg/cloudy.svg',
   '03n': '/svg/cloudy.svg',
-  '04d': '/svg/rain-cloud.svg',
-  '04n': '/svg/rain-cloud.svg',
+  '04d': '/svg/heavyCloud.svg',
+  '04n': '/svg/heavyCloud.svg',
   '09d': '/svg/light-rain.svg',
   '09n': '/svg/light-rain.svg',
   '10d': '/svg/rain.svg',
@@ -42,8 +42,8 @@ export const iconNameToEggDict: Record<string, string> = {
 }
 
 export const iconToFoodsMap: Record<string, string[]> = {
-  plant: ['01d', '01n', '02d', '02n', '09d', '09n', '10d', '10n','04d', '04n'],
-  fruit: ['01d', '01n'],
+  plant: ['01d', '01n', '02d', '02n', '04d', '04n', '10d', '10n'],
+  fruit: ['01d', '01n','09d', '09n'],
   frog: ['11d','11n'],
   insect: ['11d','11n'],
 };

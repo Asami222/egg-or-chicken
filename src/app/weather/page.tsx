@@ -1,51 +1,42 @@
 "use client";
 
 import Link from 'next/link';
-import { useWeatherData } from 'hooks/useWeatherData';
+//import { useWeatherData } from 'hooks/useWeatherData';
 import { loadingCityAtom, placeAtom } from 'app/atom';
+//import { useAtomValue } from 'jotai';
 import WeatherDetail from 'components/WeatherDetail';
 import Navbar from 'components/Navbar';
 import { format,parseISO,addHours, } from 'date-fns';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import { removeZero } from 'utils/weatherDict';
 import { useForecastFoods } from 'hooks/useForecastFoods';
+import { useFilteredWeatherData, useFilteredTodayWeatherData } from 'hooks/useFilteredWeatherData';
 import { ImgBox } from 'components/ui/img';
 import { useClearUsedDate } from 'hooks/useClearUsedDate';
 
 
 const Weather = () => {
 
-  const [place, ] = useAtom(placeAtom);
+  const place = useAtomValue(placeAtom);
+  console.log('place =', place);
+  const { data: somedays, isPending: someIsPending, error: someError, refetch } = useFilteredWeatherData(place);
+  const { data: today, isPending: todayIsPending, error: todayError } = useFilteredTodayWeatherData(place);
   const [loadingCity,] = useAtom(loadingCityAtom);
-  const { isPending, error: weatherError, data, refetch } = useWeatherData(place);
   const { data: forecastFoods, isLoading, error: foodError } = useForecastFoods();
   const { mutate: clearUsedDate }  = useClearUsedDate();
 
   useEffect(() => {
-    refetch();
-  },[place,refetch])
+    if (place) {
+      refetch();
+    }
+  }, [place, refetch]);
 
-  const firstData = data?.list[0]
+  if (!place) {
+    return <div className="min-h-screen flex justify-center items-center">Loading place...</div>;
+  }
 
-  const uniqueDates = [
-    ...new Set(
-      data?.list.map(
-        (entry) => new Date(entry.dt * 1000).toISOString().split("T")[0]
-      )
-    )
-  ];
-
-  const firstDataForEachDate = uniqueDates.map((date) => {
-    return data?.list.find((entry) => {
-      const entryDate = new Date(entry.dt * 1000).toISOString().split("T")[0];
-      const entryTime = new Date(entry.dt * 1000).getHours();
-      return entryDate === date && entryTime >= 18;
-    })
-  })
-  
-  const removeFirstDataForEachDate = firstDataForEachDate.slice(1, 6);
-  const newFirstDataForEachDate = removeFirstDataForEachDate.filter(item => item !== undefined);
+  const firstData = today;
 
   // FoodType 型定義
   type FoodType = "plant" | "fruit" | "frog" | "insect";
@@ -75,13 +66,17 @@ const Weather = () => {
   // ISOをパース → 9時間加算 → 好きなフォーマットで表示
   //const jstFirstDate = addHours(parseISO(firstData?.dt_txt.replace(" ", "T") ?? ''), 9);
 
-  if (isPending || isLoading) return (
+  if (!place) {
+    return <div className="min-h-screen flex justify-center items-center">Loading place...</div>;
+  }
+
+  if (someIsPending || todayIsPending || isLoading || loadingCity) return (
     <div className='flex items-center min-h-screen justify-center'>
       <p className='animate-bounce'>Loading...</p>
     </div>
   )
   
-  if (weatherError || foodError) return <div>エラー</div>;
+  if (someError || todayError || foodError) return <div>エラー</div>;
 
   return (
     <div>
@@ -94,7 +89,7 @@ const Weather = () => {
         <>
         {/** tody data */}
         <section className='flex w-full flex-col gap-4'>
-          <p className='text-2xl text-sky-700 text-center'>{data?.city.name}</p>
+          <p className='text-2xl text-sky-700 text-center'>{place}</p>
           <Link href='/today'>
             <WeatherDetail 
               description={firstData?.weather[0].description ?? ""}
@@ -109,7 +104,7 @@ const Weather = () => {
         {/** 5 day forcast data */}
         <section className='flex w-full flex-col gap-4'>
           <p className='text-2xl text-sky-700 text-center'>Forecast</p>
-          {newFirstDataForEachDate.map((d,i) => {
+          {somedays.map((d,i) => {
             const forecastDate = format(parseISO(d?.dt_txt ?? ""), "yyyy-MM-dd");
             const foodTypes = foodsByDate?.[forecastDate] || [];
             return (
@@ -119,7 +114,7 @@ const Weather = () => {
                   weatherIcon={d?.weather[0].icon ?? "01d"}
                   date={removeZero(parseISO(d?.dt_txt ?? ""))}
                   week={format(parseISO(d?.dt_txt ?? ""), "EEEE")}
-                  time={format(parseISO(d?.dt_txt), 'h:mm a')}
+                  time={format(parseISO(d?.dt_txt ?? ''), 'h:mm a')}
                   temp={d?.main.temp ?? 0}
                 />
                 <div className="flex justify-end gap-1 mt-1">

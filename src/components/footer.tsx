@@ -11,7 +11,6 @@ const Footer = () => {
           alt="egg or chicken"
           sizes="29vw"
           style={{width: '100%', height: 'auto'}}
-          priority
         />
       </div>
     </footer>

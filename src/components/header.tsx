@@ -46,7 +46,6 @@ const Header = () => {
                     sizes="10.3vw"
                     fill
                     style={{objectFit:"contain", objectPosition:'50% 50%'}}
-                    priority
                   />
                 </div>
               </Link>

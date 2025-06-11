@@ -6,7 +6,7 @@ import { placeAtom } from 'app/atom';
 import { useFilteredWeatherData } from "hooks/useFilteredWeatherData"
 //import { redirect } from 'next/navigation'
 import { Container } from "components/Container";
-import { ImgBox } from "components/ui/img";
+import { BigImgBox } from "components/ui/img";
 import { RenderIcons } from "components/TopDetail";
 //import { handleEggUpdateFromWeather } from 'libs/handleEggUpdateFromWeather';
 import { useEggsAndWings } from 'hooks/useItems';
@@ -69,9 +69,9 @@ const eggCounts = Object.entries(countByEggColor(eggsBeforeTodayNine)).map(
     <div className="flex flex-col w-full py-4 items-center gap-10 mt-10">
       <div className="flex justify-around pl-4 w-full">
       { isEvolved ? 
-        <ImgBox src="/chicken.webp" description="肉" sizes="72vw" className="h-[225px] w-[223px]"/>
+        <BigImgBox src="/chicken.webp" description="肉" sizes="72vw" className="h-[225px] w-[223px]"/>
         :
-        <ImgBox src="/bird.webp" description="鳥" sizes="72vw" className="h-[282px] w-[280px]"/>
+        <BigImgBox src="/bird.webp" description="鳥" sizes="72vw" className="h-[282px] w-[280px]"/>
       }
       </div>
       <Container className="px-4">

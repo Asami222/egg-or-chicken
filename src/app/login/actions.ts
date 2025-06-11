@@ -80,3 +80,21 @@ export async function oAuthSignIn(provider: Provider) {
 
   return redirect(data.url)
 }
+
+export async function testLogin() {
+  const supabase = await createClient();
+
+  const data = {
+    email: "asami2.works@gmail.com",
+    password: "test001",
+  };
+
+  const { error } = await supabase.auth.signInWithPassword(data);
+
+  if (error) {
+    redirect('/login?message=Could not authenticate test user');
+  }
+
+  revalidatePath('/', 'layout');
+  redirect('/');
+}

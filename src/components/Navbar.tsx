@@ -1,12 +1,12 @@
 'use client';
 
 //import { MdMyLocation, MdOutlineLocationOn } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SearchBox from "./SearchBox";
 import axios from "axios";
 import { loadingCityAtom, placeAtom } from "app/atom";
 import { useAtom } from "jotai";
-import { getUserPlace, saveUserPlace } from "libs/userPlace";
+//import { useAtomValue } from 'jotai';
 
 //type Props = { location?: string}
 
@@ -15,12 +15,12 @@ const API_KEY = process.env.NEXT_PUBLIC_WEATHER_KEY
 const Navbar = () => {
   const [city, setCity] = useState("")
   const [error, setError] = useState("")
-  //
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
-  const [, setPlace] = useAtom(placeAtom);
+  const [, setPlace] = useAtom(placeAtom); // ← 非同期対応済の atom
   const [, setLoadingCity] = useAtom(loadingCityAtom);
-
+  
+{/** 
   // 初期表示時、Supabaseから都市取得
   useEffect(() => {
     const init = async () => {
@@ -31,7 +31,7 @@ const Navbar = () => {
     };
     init();
   }, [setPlace]);
-
+*/}
   async function handleInputChange(value: string) {
     setCity(value)
     if(value.length >= 3) {
@@ -70,7 +70,6 @@ const Navbar = () => {
     
     setError("")
     setPlace(city);
-    await saveUserPlace(city);
     setShowSuggestions(false);
     setLoadingCity(false);
   }

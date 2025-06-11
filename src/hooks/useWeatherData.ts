@@ -12,6 +12,7 @@ export const useWeatherData = (place: string) => {
       );
       return data;
     },
+    enabled: !!place && place.trim() !== '', // ← これが重要
     staleTime: 1000 * 60 * 10, // 任意：10分間キャッシュ保持
   });
 };

@@ -46,7 +46,6 @@ export default function LogoutButton() {
         fill
         sizes="10.3vw"
         style={{ objectFit: 'contain', objectPosition: '50% 50%' }}
-        priority
       />
     </button>
   );

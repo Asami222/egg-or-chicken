@@ -114,8 +114,8 @@ export async function handleEggsGenerationAndStorage(
   const eggIdsToDelete: number[] = [];
 
   const whiteToRed = Math.floor(grouped.white.length / 20);
-  const redToGold = Math.floor(grouped.red.length / 30);
-  const blueToGold = Math.floor(grouped.blue.length / 15);
+  const redToGold = Math.floor(grouped.red.length / 20);
+  const blueToGold = Math.floor(grouped.blue.length / 20);
 
   // 白→赤
   eggIdsToDelete.push(...grouped.white.slice(0, whiteToRed * 20).map(e => e.id));
@@ -130,7 +130,7 @@ export async function handleEggsGenerationAndStorage(
   }
 
   // 赤→金
-  eggIdsToDelete.push(...grouped.red.slice(0, redToGold * 30).map(e => e.id));
+  eggIdsToDelete.push(...grouped.red.slice(0, redToGold * 20).map(e => e.id));
   for (let i = 0; i < redToGold; i++) {
     newEggsToInsert.push({
       user_id: userId,
@@ -142,7 +142,7 @@ export async function handleEggsGenerationAndStorage(
   }
 
   // 青→金
-  eggIdsToDelete.push(...grouped.blue.slice(0, blueToGold * 15).map(e => e.id));
+  eggIdsToDelete.push(...grouped.blue.slice(0, blueToGold * 20).map(e => e.id));
   for (let i = 0; i < blueToGold; i++) {
     newEggsToInsert.push({
       user_id: userId,
