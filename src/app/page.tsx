@@ -19,8 +19,14 @@ const Home = () => {
   const { data: weatherData, isPending: weatherLoading, error } = useFilteredWeatherData(place);
   const { data: items, isPending: eggsLoading } = useEggsAndWings(weatherData);
 
-  if (weatherLoading || eggsLoading) return <p>読み込み中...</p>;
-  if (error) return <div>エラーが発生しました</div>;
+  if (weatherLoading || eggsLoading) {
+    return (
+      <div className="flex flex-col w-full py-4 items-center gap-10 mt-10">
+        <EvolvePageSkeleton />
+      </div>
+    )
+  }
+  if (error) return <div className="min-h-screen flex justify-center items-center text-red-600">エラーが発生しました</div>;
 
   const now = new Date();
   //const todayStr = now.toISOString().split('T')[0]; // 今日の日付 YYYY-MM-DD
@@ -95,3 +101,50 @@ const eggCounts = Object.entries(countByEggColor(eggsBeforeTodayNine)).map(
 }
 
 export default Home
+
+const EvolvePageSkeleton = () => {
+  return (
+    <>
+      {/* Top Image */}
+      <div className="flex justify-around pl-4 w-full">
+        <div className="h-[282px] w-[280px] bg-gray-200 rounded-xl animate-pulse" />
+      </div>
+
+      {/* Egg & Wing Container */}
+      <div className="w-full px-4">
+        <div className="flex flex-col gap-3 w-full">
+          {/* Egg Skeletons */}
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex justify-between items-center w-full animate-pulse"
+            >
+              <div className="flex gap-1">
+                {Array.from({ length: 5 }).map((_, j) => (
+                  <div
+                    key={j}
+                    className="h-[40px] w-[40px] bg-gray-300 rounded-full"
+                  />
+                ))}
+              </div>
+              <div className="h-5 w-6 bg-gray-300 rounded" />
+            </div>
+          ))}
+
+          {/* Wing Skeleton */}
+          <div className="flex justify-between items-center w-full animate-pulse">
+            <div className="flex gap-1">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-[40px] w-[40px] bg-gray-300 rounded-full"
+                />
+              ))}
+            </div>
+            <div className="h-5 w-6 bg-gray-300 rounded" />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};

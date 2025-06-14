@@ -70,23 +70,27 @@ const Weather = () => {
     return <div className="min-h-screen flex justify-center items-center">Loading place...</div>;
   }
 
-  if (someIsPending || todayIsPending || isLoading || loadingCity) return (
-    <div className='flex items-center min-h-screen justify-center'>
-      <p className='animate-bounce'>Loading...</p>
+  if (someError || todayError || foodError) {
+    return <div className="min-h-screen flex justify-center items-center text-red-600">エラーが発生しました</div>;
+  }
+
+
+  if (someIsPending || todayIsPending || isLoading || loadingCity) {
+  return (
+    <div>
+      <div className='flex justify-center mt-6'><Navbar /></div>
+      <div className='mx-auto flex flex-col gap-9 w-full pb-10 pt-4'>
+        <WeatherSkeleton />
+      </div>
     </div>
-  )
-  
-  if (someError || todayError || foodError) return <div>エラー</div>;
+  );
+}
 
   return (
     <div>
       {/** nav bar */}
       <div className='flex justify-center mt-6'><Navbar/></div>
       <div className='mx-auto flex flex-col gap-9 w-full pb-10 pt-4'>
-        { loadingCity ? (
-          <WeatherSkeleton />
-        ) : (
-        <>
         {/** tody data */}
         <section className='flex w-full flex-col gap-4'>
           <p className='text-2xl text-sky-700 text-center'>{place}</p>
@@ -139,7 +143,6 @@ const Weather = () => {
             )
           })}
         </section>
-        </> )}
         </div>
       </div>
   );
