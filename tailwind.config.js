@@ -7,8 +7,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        roboto: ['var(--font-roboto)'],
-        ibm_plex_sans: ['var(--font-ibm-plex-sans)'],
+        roboto: ['var(--font-roboto)', 'sans-serif'],
+        ibm: ['var(--font-ibm-plex-sans)', 'sans-serif'],
       },
     },
   },

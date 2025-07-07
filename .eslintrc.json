@@ -12,9 +12,7 @@
     "plugin:tailwindcss/recommended"
   ],
   "plugins": ["prettier"],
-  "ignorePatterns": [
-    "*.config.js"
-  ],
+  "ignorePatterns": ["*.config.js"],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "import/order": [2, { "alphabetize": { "order": "asc" } }],
@@ -29,5 +27,16 @@
         "tabWidth": 2
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["e2e/**"],
+      "extends": ["plugin:playwright/recommended"]
+    },
+    {
+      "files": ["tests/**"],
+      "plugins": ["jest"],
+      "extends": ["plugin:jest/recommended"]
+    }
+  ]
 }

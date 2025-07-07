@@ -5,9 +5,10 @@ import { useAtom } from 'jotai';
 import { placeAtom } from 'app/atom';
 import { useFilteredWeatherData } from "hooks/useFilteredWeatherData"
 import { removeZero } from 'utils/weatherDict';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { shortWeekNameDict } from 'utils/weatherDict';
 import { ImgBox } from './ui/img';
+import { WeatherData1 } from 'utils/weatherdata';
 
 type FormState = {
   date: string[];
@@ -21,24 +22,36 @@ type FoodCheckboxProps = {
     errorMessage?: string | null;
     onDelete: (count: number, form: FormState) => void;
     onClose: () => void
+    usedDates: Set<string>; 
 }
 
 
-const FoodCheckbox = ({ imgexchange, imgdescription, maxCount, onDelete, errorMessage, onClose }: FoodCheckboxProps) => {
+const FoodCheckbox = ({ imgexchange, imgdescription, maxCount, onDelete, errorMessage, onClose, usedDates }: FoodCheckboxProps) => {
 
   const [place] = useAtom(placeAtom);
   const { data, isPending, error } = useFilteredWeatherData(place);
 
-  const setting = useMemo(() => {
-    if (!data) return [];
+  // JSXの上の useMemo を修正
 
-    return data.map((d) => {
-      const date = new Date(d? d.dt * 1000 : ''); // UNIX timestamp → Date
-      return {
-        date: `${removeZero(date)}(${shortWeekNameDict[format(date, 'EEEE')]})`,
-      };
-    });
-  }, [data]);
+const setting = useMemo(() => {
+  if (!data) return [];
+
+  const formattedUsedDates = new Set(
+    [...usedDates].map((dateStr) => {
+      const parsed = parse(dateStr, 'yyyy-MM-dd', new Date());
+      return `${removeZero(parsed)}(${shortWeekNameDict[format(parsed, 'EEEE')]})`;
+    })
+  );
+
+  return (data ?? [])
+    .filter((d): d is WeatherData1 => d !== undefined) //  型ガードで明示
+    .map((d) => {
+      const date = new Date(d.dt * 1000);
+      const label = `${removeZero(date)}(${shortWeekNameDict[format(date, 'EEEE')]})`;
+      return formattedUsedDates.has(label) ? null : { date: label };
+    })
+    .filter(Boolean) as { date: string }[];
+}, [data, usedDates]);
 
   //const initialFormValue = setting[0] ? [setting[0].date] : []; // setting[0] が存在するかチェック
   

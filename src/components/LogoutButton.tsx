@@ -14,28 +14,54 @@ export default function LogoutButton() {
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) setUserId(user.id);
-    };
-    fetchUser();
-    // auth 状態変更を監視
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUserId(session?.user?.id ?? null);
-    });
+  let mounted = true
+  let currentUserId: string | null = null
 
-    return () => {
-      authListener.subscription?.unsubscribe(); // クリーンアップ
-    };
-  }, []);
+  const updateUser = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    const newUserId = session?.user?.id ?? null
+
+    if (mounted && currentUserId !== newUserId) {
+      currentUserId = newUserId
+      setUserId(newUserId)
+    }
+  }
+
+  // 初回セッションチェック
+  updateUser()
+
+  // 🔁 1秒後に再取得（ログイン反映の遅延対策）
+  const retry = setTimeout(() => {
+    updateUser()
+  }, 1000)
+
+  // 🧭 認証状態変更を監視
+  const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const newUserId = session?.user?.id ?? null
+
+    if (mounted && currentUserId !== newUserId) {
+      currentUserId = newUserId
+      setUserId(newUserId)
+    }
+  })
+
+  return () => {
+    mounted = false
+    authListener.subscription?.unsubscribe()
+    clearTimeout(retry)
+  }
+}, [])
 
   const handleLogout = async () => {
     if (userId) {
       localStorage.removeItem(`${LOCAL_STORAGE_KEY}${userId}`);
     }
-    await signOut(); // Server Action 実行 → /login に遷移
+    // 即時ログイン状態を反映（ログアウト画像へ切り替え）
+    setUserId(null)
+    await signOut(); // ログアウト処理
+    // supabase.auth.getUser() を再実行して最新状態に同期
+    const { data: { user } } = await supabase.auth.getUser();
+    setUserId(user?.id ?? null);
   };
 
   return (

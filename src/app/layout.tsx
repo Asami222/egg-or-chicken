@@ -38,7 +38,7 @@ export default function RootLayout({
       <ReactQueryClientProvider>
       <body className="flex flex-col min-h-screen justify-center">
         <Header />
-          <main className="flex justify-center bg-[#EBF3FF] flex-grow pb-10">
+          <main className="flex justify-center bg-[#EBF3FF] flex-grow pb-10" role="main" id="main-content">
             <div className="w-[86%] max-w-sm">
               <Suspense fallback={<p>読み込み中...</p>}>
               {children}

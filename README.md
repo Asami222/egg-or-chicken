@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div id="top"></div>
 
-## Getting Started
+# Egg or Chicken
+### ストーリー
+<!-- プロジェクトについて -->
+Web APIから天気予報を取得し、当日の天気の内容によって鳥が異なる色の卵を産みます。鳥は羽根を毎日１枚落とします。鳥が食べる餌も天気の内容によって異なる餌を取得できます。鳥に餌を与えると、当日の産む卵の色が変わります。卵を集めると、最終的に金の卵になり、金の卵を集めると、鳥が特別な見た目になります。羽がある程度集まると、鳥は肉に変化し、肉になる前に餌を与えることでそれを防ぐことができます。
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## URL
+https://egg-or-chicken.vercel.app
+ <br >
+テストユーザーとして体験する（登録不要）から、メールアドレスとパスワードを入力せずにログインできます。
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 使用技術一覧
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+<!-- シールド一覧 -->
+<!-- 該当するプロジェクトの中から任意のものを選ぶ-->
+<p style="display: inline">
+  <!-- フロントエンドの言語一覧 -->
+  <img src="https://img.shields.io/badge/-typescript-000000?style=for-the-badge&logo=typescript&logoColor=FFE500">
+  <!-- フロントエンドのフレームワーク一覧 -->
+  <img src="https://img.shields.io/badge/-react-000000?style=for-the-badge&logo=react&logoColor=61DAFB">
+  <img src="https://img.shields.io/badge/-Next.js-000000.svg?logo=next.js&style=for-the-badge">
+  <img src="https://img.shields.io/badge/-tailwindcss-000000?style=for-the-badge&logo=tailwindcss&logoColor=0854C1">
+  <img src="https://img.shields.io/badge/-reactquery-000000?style=for-the-badge&logo=reactquery&logoColor=FF4154">
+  <img src="https://img.shields.io/badge/-axios-000000?style=for-the-badge&logo=axios&logoColor=5A29E4">
+  <img src="https://img.shields.io/badge/-supabase-000000?style=for-the-badge&logo=supabase&logoColor=3FCF8E">
+  <!-- バックエンドの言語一覧 -->
+  <!-- ミドルウェア一覧 -->
+  <!-- インフラ一覧 -->
+</p>
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 機能一覧
+- ユーザー認証、データ管理(Supabase)
+- 外部API(OpenWeatherMap API)機能取得(axios)
+- サーバー状態管理(React Query)
+- React状態管理(Jotai)
 
-## Learn More
+<!-- 
+- ユーザー登録、ログイン機能(devise)
+- 投稿機能
+  - 画像投稿(refile)
+  - 位置情報検索機能(geocoder)
+- いいね機能(Ajax)
+  - ランキング機能
+- コメント機能(Ajax)
+- フォロー機能(Ajax)
+- ページネーション機能(kaminari)
+  - 無限スクロール(Ajax)
+- 検索機能(ransack)
+-->
+## テスト
+- E2Eテスト(Playwight)
+  - 認証機能
+  - フォーム
 
-To learn more about Next.js, take a look at the following resources:
+## 環境
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<!-- 言語、フレームワーク、ミドルウェア、インフラの一覧とバージョンを記載 -->
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| 言語・フレームワーク  | バージョン |
+| --------------------- | ---------- |
+| Node.js               | 22.2.0    |
+| React                 | ^19.0.0     |
+| Next.js               | 15.3.1     |
 
-## Deploy on Vercel
+その他のパッケージのバージョンは package.json を参照してください
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## プロジェクト詳細
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/food-area.webp" width="250" />
+</p>
+
+
+<p align="right">(<a href="#top">トップへ</a>)</p>

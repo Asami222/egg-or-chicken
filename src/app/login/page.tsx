@@ -27,7 +27,7 @@ export default async function LoginPage() {
     <section className="mt-8">
         <OAuthButtons />
         <Separator>or continue with</Separator>
-        <form id="login-form">
+        <form id="login-form" aria-label="login">
             <div className="mb-4">
               <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
               <input id="email" name="email" type="email" className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="m@example.com" required />

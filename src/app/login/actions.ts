@@ -9,6 +9,9 @@ import { getURL } from 'libs/helpers'
 export async function login(formData: FormData) {
   const supabase = await createClient()
 
+  // 先に既存セッションを破棄しておく
+  //await supabase.auth.signOut();
+
   // type-casting here for convenience
   // in practice, you should validate your inputs
   const data = {
@@ -28,6 +31,8 @@ export async function login(formData: FormData) {
 
 export async function signup(formData: FormData) {
   const supabase = await createClient()
+  // 先に既存セッションを破棄しておく
+  //await supabase.auth.signOut();
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
@@ -66,6 +71,8 @@ export async function oAuthSignIn(provider: Provider) {
   }
 
   const supabase = await createClient();
+  // 先に既存セッションを破棄しておく
+  //await supabase.auth.signOut();
   const redirectUrl = getURL("/auth/callback")
   const { data, error } = await supabase.auth.signInWithOAuth({
       provider,

@@ -1,9 +1,9 @@
 export type Egg = {
-  id: number;
+  id: number; 
   date: string; // YYYY-MM-DD
-  weather: string;
-  egg_color: string;
-  is_placeholder: boolean;
+  weather: string; // 2025-05-26
+  egg_color: string; // “egg-yellow”
+  is_placeholder: boolean; //天気データが不完全な場合のプレースホルダーフラグ
 };
 
 export type NewEgg = Omit<Egg, 'id' | 'user_id'>;
