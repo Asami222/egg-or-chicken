@@ -77,7 +77,7 @@ https://egg-or-chicken.vercel.app
 <p align="center">
   <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/weather-area.webp" width="500" style="max-width: 100%;" />
 </p>
-<h3 align="center">使い方ページ</h3>
+<h3 align="center">毎日訪れてアイテムを獲得</h3>
 <p align="center">
   <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/home-area.webp" width="500" style="max-width: 100%;" />
 </p>
