@@ -68,9 +68,24 @@ https://egg-or-chicken.vercel.app
 
 ## プロジェクト詳細
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/food-area.webp" width="250" />
-</p>
+<div align="center">
+  <p align="center">
+    <h3>ご飯の予約</h3>
+    <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/food-area.webp" width="500" style="max-width: 100%;"/>
+  </p>
+  <p　align="center">
+    <h3>天気情報取得</h3>
+    <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/weather-area.webp" width="500" style="max-width: 100%;"/>
+  </p>
+  <p　align="center">
+    <h3>使い方ページ</h3>
+    <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/home-area.webp" width="500" style="max-width: 100%;"/>
+  </p>
+  <p　align="center">
+    <h3>使い方ページ</h3>
+    <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/howto-area.webp" width="500" style="max-width: 100%;"/>
+  </p>
+</div>
 
 
 <p align="right">(<a href="#top">トップへ</a>)</p>
