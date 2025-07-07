@@ -64,31 +64,26 @@ https://egg-or-chicken.vercel.app
 | React                 | ^19.0.0     |
 | Next.js               | 15.3.1     |
 
-その他のパッケージのバージョンは package.json を参照してください
+その他のパッケージのバージョンは package.json を参照してください. 
+
 
 ## プロジェクト詳細
 
-<div align="center">
-  <p align="center">
-    <h3>ご飯の予約</h3>
-    <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/food-area.webp" width="500" style="max-width: 100%;"/>
-  </p>
-  <br />
-  <p align="center">
-    <h3>天気情報取得</h3>
-    <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/weather-area.webp" width="500" style="max-width: 100%;"/>
-  </p>
-  <br />
-  <p align="center">
-    <h3>使い方ページ</h3>
-    <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/home-area.webp" width="500" style="max-width: 100%;"/>
-  </p>
-  <br />
-  <p align="center">
-    <h3>使い方ページ</h3>
-    <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/howto-area.webp" width="500" style="max-width: 100%;"/>
-  </p>
-</div>
-
+<h3 align="center">ご飯の予約</h3>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/food-area.webp" width="500" style="max-width: 100%;" />
+</p>
+<h3 align="center">天気情報取得</h3>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/weather-area.webp" width="500" style="max-width: 100%;" />
+</p>
+<h3 align="center">使い方ページ</h3>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/home-area.webp" width="500" style="max-width: 100%;" />
+</p>
+<h3 align="center">使い方ページ</h3>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/howto-area.webp" width="500" style="max-width: 100%;" />
+</p>
 
 <p align="right">(<a href="#top">トップへ</a>)</p>
