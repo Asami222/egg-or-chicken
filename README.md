@@ -69,7 +69,7 @@ https://egg-or-chicken.vercel.app
 
 ## プロジェクト詳細
 
-<h3 align="center">ご飯の予約</h3>
+<h3 align="center">ごはんの予約</h3>
 <p align="center">
   <img src="https://raw.githubusercontent.com/Asami222/egg-or-chicken/main/public/git/food-area.webp" width="500" style="max-width: 100%;" />
 </p>
