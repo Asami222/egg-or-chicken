@@ -103,5 +103,6 @@ export async function testLogin() {
   }
 
   revalidatePath('/', 'layout');
-  redirect('/');
+  // 中継ページにリダイレクト
+  redirect('/login/test-redirect');
 }

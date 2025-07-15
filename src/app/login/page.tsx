@@ -1,10 +1,16 @@
 
-import { login, signup } from "./actions";
+import { login, signup, testLogin } from "./actions";
 import { OAuthButtons } from "./oauth-signin";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient } from "libs/supabase/server";
 import Separator from "components/separator";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "ログイン | Egg or Chicken",
+  description: "ログインページです。メールとパスワード入力、GitHub、テストユーザーでログインのどれかを選びログインできます。新規登録の場合は、メールとパスワードを入力後に新規ユーザー登録をクリックしてください。"
+}
 
 
 export default async function LoginPage() {
@@ -43,6 +49,15 @@ export default async function LoginPage() {
           )}
           <button formAction={login} className="inline-block w-full text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 shadow-lg shadow-teal-500/50 dark:shadow-lg dark:shadow-teal-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Sign in</button>
           <button formAction={signup} className="block mx-auto text-teal-500 hover:text-teal-600 font-medium text-[13px] px-5 py-2.5">新規ユーザー登録</button>
+          </form>
+          {/* テストユーザーログイン */}
+          <form action="" method="POST">
+            <button
+              formAction={testLogin}
+              className="mt-2 w-full text-center text-sm text-sky-600 underline"
+            >
+              テストユーザーでログイン
+            </button>
           </form>
           {/* 体験ログイン（ゲストアカウント自動生成） */}
           <form action="/login/test-guest-login" method="POST">

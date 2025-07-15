@@ -5,6 +5,7 @@ import Footer from "components/footer";
 import { Roboto, IBM_Plex_Sans_JP } from 'next/font/google';
 import { ReactQueryClientProvider } from "components/ReactQueryClientProvider";
 import { Suspense } from 'react';
+import type { Metadata } from "next";
 
 export const roboto = Roboto({
   weight: ['300','400','500'],
@@ -21,12 +22,12 @@ export const ibm_plex_sans = IBM_Plex_Sans_JP({
   display: 'swap',
   preload: false
 })
-/*
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-*/
+
+export const metadata: Metadata = {
+  title: "Egg or Chicken",
+  description: "アプリに定期的にアクセスして様々な色の卵を集めましょう！当日の天気の状態によって獲得できるアイテムが変わります。"
+}
+
 export default function RootLayout({
   children,
 }: {

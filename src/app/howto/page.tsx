@@ -2,6 +2,12 @@ import { Container } from "components/Container";
 import { contents, navMenu } from "data/howtocontents";
 import { WeatherKindWrapper, ChangeKindWrapper, FoodAppearWrapper,HowtoSection } from "components/howtoDetail";
 import { ImgBox } from "components/ui/img";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "あそびかた | Egg or Chicken",
+  description: "このアプリの遊び方と、ナビゲーションアイコンの説明のページです。"
+}
 
 const Howto = () => {
   return (
